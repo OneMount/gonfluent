@@ -1,9 +1,6 @@
+# Confluent Platform Client
 [![codecov](https://codecov.io/gh/wayarmy/gonfluent/branch/main/graph/badge.svg)](https://codecov.io/gh/wayarmy/gonfluent)
 [![Build Status](https://travis-ci.com/wayarmy/gonfluent.svg?branch=main)](https://travis-ci.com/wayarmy/gonfluent)
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fwayarmy%2Fgonfluent.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fwayarmy%2Fgonfluent?ref=badge_shield)
-
-
-# Confluent Platform Client
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fwayarmy%2Fgonfluent.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fwayarmy%2Fgonfluent?ref=badge_shield)
 
 
