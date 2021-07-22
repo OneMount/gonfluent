@@ -1,4 +1,6 @@
 # Confluent Platform Client
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fwayarmy%2Fgonfluent.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fwayarmy%2Fgonfluent?ref=badge_shield)
+
 
 - Maintainer: Quan Phuong <quanpc294@gmail.com>
 - Provide Go client for Confluent platform, reference [Confluent API document](https://docs.confluent.io/platform/current/kafka-rest/api.html) and [Confluent Metadata API document](https://docs.confluent.io/platform/current/security/rbac/mds-api.html)
@@ -249,3 +251,6 @@ go mod download
 ### Testing
 
 `go test`
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fwayarmy%2Fgonfluent.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fwayarmy%2Fgonfluent?ref=badge_large)
