@@ -53,7 +53,8 @@ func TestAcls_ListAclsSuccess(t *testing.T) {
 	}
 `), 200, "200 OK", nil
 	}
-	c := NewClient(&mock, &mk)
+	clusterAdmin, _ := mk.NewSaramaClusterAdmin()
+	c := NewClient(&mock, &mk, clusterAdmin)
 	acls, err := c.ListAcls("cluster-1")
 	assert.NoError(t, err)
 	assert.Equal(t, 2, len(acls))
@@ -68,7 +69,8 @@ func TestAcls_CreateAclsSuccess(t *testing.T) {
 		assert.Equal(t, "/clusters/cluster-1/acls", uri)
 		return []byte(``), 201, "201", nil
 	}
-	c := NewClient(&mock, &mk)
+	clusterAdmin, _ := mk.NewSaramaClusterAdmin()
+	c := NewClient(&mock, &mk, clusterAdmin)
 	aclConfig := Acl{}
 	err := c.CreateAcl("cluster-1", &aclConfig)
 	assert.NoError(t, err)
@@ -115,7 +117,8 @@ func TestAcls_DeleteAclSuccess(t *testing.T) {
 		}
 `), 200, "200", nil
 	}
-	c := NewClient(&mock, &mk)
+	clusterAdmin, _ := mk.NewSaramaClusterAdmin()
+	c := NewClient(&mock, &mk, clusterAdmin)
 	err := c.DeleteAcl("cluster-1", "")
 	assert.NoError(t, err)
 }

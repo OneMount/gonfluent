@@ -83,7 +83,8 @@ func TestRBac_GetTopicPartitionsSuccess(t *testing.T) {
 	}
 `), 200, "200 OK", nil
 	}
-	c := NewClient(&mock, &mk)
+	clusterAdmin, _ := mk.NewSaramaClusterAdmin()
+	c := NewClient(&mock, &mk, clusterAdmin)
 	partitions, err := c.GetTopicPartitions("cluster-1", "topic-1")
 	if assert.Nil(t, err) {
 		assert.Equal(t, 3, len(partitions))
@@ -100,7 +101,8 @@ func TestRBac_GetTopicPartitionsFailWithNotExist(t *testing.T) {
 		assert.Equal(t, "/kafka/v3/clusters/cluster-1/topics/topic-1/partitions", uri)
 		return nil, 404, "404 Not Found", nil
 	}
-	c := NewClient(&mock, &mk)
+	clusterAdmin, _ := mk.NewSaramaClusterAdmin()
+	c := NewClient(&mock, &mk, clusterAdmin)
 	_, err := c.GetTopicPartitions("cluster-1", "topic-1")
 
 	if assert.NotNil(t, err) {
@@ -118,7 +120,8 @@ func TestRBac_GetTopicPartitionsFailWithWrongResponse(t *testing.T) {
 		<
 `), 200, "200 OK", nil
 	}
-	c := NewClient(&mock, &mk)
+	clusterAdmin, _ := mk.NewSaramaClusterAdmin()
+	c := NewClient(&mock, &mk, clusterAdmin)
 	_, err := c.GetTopicPartitions("cluster-1", "topic-1")
 	assert.NotNil(t, err)
 }

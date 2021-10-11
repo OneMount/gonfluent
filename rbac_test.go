@@ -37,7 +37,8 @@ func TestRBac_BindPrincipalToRoleSuccess(t *testing.T) {
 		assert.Equal(t, "/security/1.0/principals/User:confluent-test/roles/Operator", uri)
 		return []byte(``), 204, "204", nil
 	}
-	c := NewClient(&mock, &mk)
+	clusterAdmin, _ := mk.NewSaramaClusterAdmin()
+	c := NewClient(&mock, &mk, clusterAdmin)
 	err := c.BindPrincipalToRole("User:confluent-test", "Operator", cDetails)
 	assert.Nil(t, err)
 }
@@ -63,7 +64,8 @@ func TestRBac_BindPrincipalToRoleFailWithNonExistedRole(t *testing.T) {
 		}
 		`), 422, "422 Unprocessable Entity", nil
 	}
-	c := NewClient(&mock, &mk)
+	clusterAdmin, _ := mk.NewSaramaClusterAdmin()
+	c := NewClient(&mock, &mk, clusterAdmin)
 	err := c.BindPrincipalToRole("User:confluent-test", "Operator", cDetails)
 	assert.NotNil(t, err)
 	assert.Equal(t, errors.New("error with status: 422 Unprocessable Entity Cannot find role Operator"), err)
@@ -77,7 +79,8 @@ func TestRBac_DeleteRoleBindingSuccess(t *testing.T) {
 		assert.Equal(t, "/security/1.0/principals/User:confluent-test/roles/Operator", uri)
 		return []byte(``), 204, "204", nil
 	}
-	c := NewClient(&mock, &mk)
+	clusterAdmin, _ := mk.NewSaramaClusterAdmin()
+	c := NewClient(&mock, &mk, clusterAdmin)
 	err := c.DeleteRoleBinding(principal, roleName, cDetails)
 	assert.Nil(t, err)
 }
@@ -103,7 +106,8 @@ func TestRBac_DeleteRoleBindingFailWithNonExistedRole(t *testing.T) {
 		}
 `), 422, "422 Unprocessable Entity", nil
 	}
-	c := NewClient(&mock, &mk)
+	clusterAdmin, _ := mk.NewSaramaClusterAdmin()
+	c := NewClient(&mock, &mk, clusterAdmin)
 	err := c.DeleteRoleBinding("User:confluent-test", "Operator", ClusterDetails{
 		Clusters: Clusters{
 			KafkaCluster: "cluster-1",
@@ -134,7 +138,8 @@ func TestRBac_LookupRoleBindingSuccess(t *testing.T) {
 		]
 `), 200, "200 OK", nil
 	}
-	c := NewClient(&mock, &mk)
+	clusterAdmin, _ := mk.NewSaramaClusterAdmin()
+	c := NewClient(&mock, &mk, clusterAdmin)
 	roleBinding, err := c.LookupRoleBinding(principal, roleName, cDetails)
 	if assert.Nil(t, err) {
 		assert.Equal(t, 2, len(roleBinding))
@@ -163,7 +168,8 @@ func TestRBac_LookupRoleBindingFailWithNonExistedRole(t *testing.T) {
 		}
 `), 400, "404 Not Found", nil
 	}
-	c := NewClient(&mock, &mk)
+	clusterAdmin, _ := mk.NewSaramaClusterAdmin()
+	c := NewClient(&mock, &mk, clusterAdmin)
 	roleBinding, err := c.LookupRoleBinding(principal, roleName, cDetails)
 	assert.NotNil(t, err)
 	assert.Equal(t, errors.New("error with status: 404 Not Found Cannot find role "+roleName), err)
@@ -178,7 +184,8 @@ func TestRBac_IncreaseRoleBindingSuccess(t *testing.T) {
 		assert.Equal(t, "/security/1.0/principals/User:confluent-test/roles/Operator/bindings", uri)
 		return []byte(``), 200, "200 OK", nil
 	}
-	c := NewClient(&mock, &mk)
+	clusterAdmin, _ := mk.NewSaramaClusterAdmin()
+	c := NewClient(&mock, &mk, clusterAdmin)
 	err := c.IncreaseRoleBinding(principal, roleName, uRoleBinding)
 	assert.Nil(t, err)
 }
@@ -204,7 +211,8 @@ func TestRBac_IncreaseRoleBindingFailWithNonExistedRole(t *testing.T) {
 		}
 `), 404, "404 Not Found", nil
 	}
-	c := NewClient(&mock, &mk)
+	clusterAdmin, _ := mk.NewSaramaClusterAdmin()
+	c := NewClient(&mock, &mk, clusterAdmin)
 	err := c.IncreaseRoleBinding(principal, roleName, uRoleBinding)
 	assert.NotNil(t, err)
 	assert.Equal(t, errors.New("error with status: 404 Not Found Cannot find role "+roleName), err)
@@ -218,7 +226,8 @@ func TestRBac_DecreaseRoleBindingSuccess(t *testing.T) {
 		assert.Equal(t, "/security/1.0/principals/User:confluent-test/roles/Operator/bindings", uri)
 		return []byte(``), 204, "204", nil
 	}
-	c := NewClient(&mock, &mk)
+	clusterAdmin, _ := mk.NewSaramaClusterAdmin()
+	c := NewClient(&mock, &mk, clusterAdmin)
 	err := c.DecreaseRoleBinding(principal, roleName, uRoleBinding)
 	assert.Nil(t, err)
 }
@@ -244,7 +253,8 @@ func TestRBac_DecreaseRoleBindingFailWithNonExistedRole(t *testing.T) {
 		}
 `), 404, "404 Not Found", nil
 	}
-	c := NewClient(&mock, &mk)
+	clusterAdmin, _ := mk.NewSaramaClusterAdmin()
+	c := NewClient(&mock, &mk, clusterAdmin)
 	err := c.DecreaseRoleBinding(principal, roleName, uRoleBinding)
 	assert.NotNil(t, err)
 	assert.Equal(t, errors.New("error with status: 404 Not Found Cannot find role "+roleName), err)
@@ -271,7 +281,8 @@ func TestRBac_OverwriteRoleBindingSuccess(t *testing.T) {
 		}
 `), 204, "", nil
 	}
-	c := NewClient(&mock, &mk)
+	clusterAdmin, _ := mk.NewSaramaClusterAdmin()
+	c := NewClient(&mock, &mk, clusterAdmin)
 	err := c.OverwriteRoleBinding(principal, roleName, uRoleBinding)
 	assert.Nil(t, err)
 }
@@ -297,7 +308,8 @@ func TestRBac_OverwriteRoleBindingFailWithNonExistedRole(t *testing.T) {
 		}
 `), 404, "404 Not Found", nil
 	}
-	c := NewClient(&mock, &mk)
+	clusterAdmin, _ := mk.NewSaramaClusterAdmin()
+	c := NewClient(&mock, &mk, clusterAdmin)
 	err := c.OverwriteRoleBinding(principal, roleName, uRoleBinding)
 	assert.NotNil(t, err)
 	assert.Equal(t, errors.New("error with status: 404 Not Found Cannot find role "+roleName), err)

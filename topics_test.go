@@ -38,7 +38,8 @@ func TestTopics_CreateTopicsSuccess(t *testing.T) {
 			}
 		`), 204, "204 Accepted", nil
 	}
-	c := NewClient(&mock, &mk)
+	clusterAdmin, _ := mk.NewSaramaClusterAdmin()
+	c := NewClient(&mock, &mk, clusterAdmin)
 	err := c.CreateTopic(clusterId, "topic-X", 3, 3, partitionConfig, nil)
 	assert.NoError(t, err)
 }
@@ -56,7 +57,8 @@ func TestTopics_CreateExistingTopic(t *testing.T) {
 			}
 		`), 400, "400 Bad Request", nil
 	}
-	c := NewClient(&mock, &mk)
+	clusterAdmin, _ := mk.NewSaramaClusterAdmin()
+	c := NewClient(&mock, &mk, clusterAdmin)
 	err := c.CreateTopic(clusterId, "topic-X", 3, 3, partitionConfig, nil)
 	assert.Equal(t, errors.New("error with status: 400 Bad Request Topic 'topic-X' already exists"), err)
 }
@@ -74,7 +76,8 @@ func TestTopics_GetNonExistingTopic(t *testing.T) {
 			}
 		`), 404, "404 Not Found", nil
 	}
-	c := NewClient(&mock, &mk)
+	clusterAdmin, _ := mk.NewSaramaClusterAdmin()
+	c := NewClient(&mock, &mk, clusterAdmin)
 	newTopic, err := c.GetTopic(clusterId, "topic-X")
 	assert.Equal(t, errors.New("error with status: 404 Not Found This server does not host this topic-partition"), err)
 	assert.Nil(t, newTopic)
@@ -159,7 +162,8 @@ func TestTopics_GetAllTopics(t *testing.T) {
 			}
 		`), 200, "OK", nil
 	}
-	c := NewClient(&mock, &mk)
+	clusterAdmin, _ := mk.NewSaramaClusterAdmin()
+	c := NewClient(&mock, &mk, clusterAdmin)
 	topics, err := c.ListTopics(clusterId)
 	if assert.NoError(t, err) {
 		assert.Equal(t, 3, len(topics))
@@ -167,66 +171,13 @@ func TestTopics_GetAllTopics(t *testing.T) {
 	}
 }
 
-func TestTopics_UpdatePartitionsSuccess(t *testing.T) {
-	mock := MockHttpClient{}
-
-	seedBroker := sarama.NewMockBroker(t, 1)
-	defer seedBroker.Close()
-
-	seedBroker.SetHandlerByMap(map[string]sarama.MockResponse{
-		"MetadataRequest": sarama.NewMockMetadataResponse(t).
-			SetController(seedBroker.BrokerID()).
-			SetBroker(seedBroker.Addr(), seedBroker.BrokerID()),
-		"CreatePartitionsRequest": sarama.NewMockCreatePartitionsResponse(t),
-	})
-
-	mk := MockKafkaClient{}
-	mk.MockBrokers = seedBroker
-	mk.MockVersion = sarama.V2_4_0_0
-
-	c := NewClient(&mock, &mk)
-
-	mockTopic := Topic{
-		Name: "my-topic",
-		Partitions: 3,
-	}
-	err := c.UpdatePartitions(mockTopic)
-	assert.Nil(t, err)
-}
-
-func TestTopics_UpdatePartitionsWithoutAuthorize(t *testing.T) {
-	mock := MockHttpClient{}
-	seedBroker := sarama.NewMockBroker(t, 1)
-	defer seedBroker.Close()
-
-	seedBroker.SetHandlerByMap(map[string]sarama.MockResponse{
-		"MetadataRequest": sarama.NewMockMetadataResponse(t).
-			SetController(seedBroker.BrokerID()).
-			SetBroker(seedBroker.Addr(), seedBroker.BrokerID()),
-		"CreatePartitionsRequest": sarama.NewMockCreatePartitionsResponse(t),
-	})
-
-	mk := MockKafkaClient{}
-	mk.MockBrokers = seedBroker
-	mk.MockVersion = sarama.V1_0_0_0
-
-	c := NewClient(&mock, &mk)
-
-	mockTopic := Topic{
-		Name: "_internal_topic",
-		Partitions: 3,
-	}
-	want := "The client is not authorized to access this topic"
-	err := c.UpdatePartitions(mockTopic)
-	assert.Contains(t, err.Error(), want)
-}
-
 func TestTopics_GetUpdatingSuccess(t *testing.T) {
 	mock := MockHttpClient{}
 	mk := MockKafkaClient{}
 	mk.TopicNameExpected = "my-topic"
 
-	c := NewClient(&mock, &mk)
+	clusterAdmin, _ := mk.NewSaramaClusterAdmin()
+	c := NewClient(&mock, &mk, clusterAdmin)
 
 	mockTopic := Topic{
 		Name: "my-topic",
@@ -275,7 +226,7 @@ func TestTopics_BuildNewReplicas(t *testing.T) {
 	deltaRF = int16(1)
 	b, err = buildNewReplicas(&allReplicas, &usedReplicas, deltaRF)
 	assert.Nil(t, err)
-	assert.Equal(t, []int32{5, 6, 7, 4}, *b)
+	assert.Equal(t, []int32{5, 6, 7, 2}, *b)
 
 	deltaRF = int16(2)
 	b, err = buildNewReplicas(&allReplicas, &usedReplicas, deltaRF)

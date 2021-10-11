@@ -20,6 +20,18 @@ type Acl struct {
 	Permission   string `json:"permission,omitempty"`
 }
 
+// Returns a list of ACLs that match the search criteria.
+// Parameters:
+//    cluster_id (string) – The Kafka cluster ID.
+// Query Parameters:
+//    resource_type (string) – The ACL resource type.
+//    resource_name (string) – The ACL resource name.
+//    pattern_type (string) – The ACL pattern type.
+//    principal (string) – The ACL principal.
+//    host (string) – The ACL host.
+//    operation (string) – The ACL operation.
+//    permission (string) – The ACL permission.
+// @ref https://docs.confluent.io/platform/current/kafka-rest/api.html#get--clusters-cluster_id-acls
 func (c *Client) ListAcls(clusterId string) ([]Acl, error) {
 	u := "/clusters/" + clusterId + "/" + aclsPath
 	r, err := c.DoRequest("GET", u, nil)
@@ -39,6 +51,8 @@ func (c *Client) ListAcls(clusterId string) ([]Acl, error) {
 	return body.Data, nil
 }
 
+// Creates an ACL.
+// @ref https://docs.confluent.io/platform/current/kafka-rest/api.html#post--clusters-cluster_id-acls
 func (c *Client) CreateAcl(clusterId string, aclConfig *Acl) error {
 	u := "/clusters/" + clusterId + "/" + aclsPath
 
@@ -52,6 +66,18 @@ func (c *Client) CreateAcl(clusterId string, aclConfig *Acl) error {
 	return nil
 }
 
+// Deletes the list of ACLs that matches the search criteria.
+// Parameters:
+//    cluster_id (string) – The Kafka cluster ID.
+// Query Parameters:
+//    resource_type (string) – The ACL resource type.
+//    resource_name (string) – The ACL resource name.
+//    pattern_type (string) – The ACL pattern type.
+//    principal (string) – The ACL principal.
+//    host (string) – The ACL host.
+//    operation (string) – The ACL operation.
+//    permission (string) – The ACL permission.
+// @ref https://docs.confluent.io/platform/current/kafka-rest/api.html#delete--clusters-cluster_id-acls
 func (c *Client) DeleteAcl(clusterId, resourceName string) error {
 	u := "/clusters/" + clusterId + "/" + aclsPath
 

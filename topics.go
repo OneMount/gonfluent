@@ -192,18 +192,11 @@ func (c *Client) UpdateReplicationsFactor(t Topic) error {
 	if err := c.saramaClient.RefreshMetadata(); err != nil {
 		return err
 	}
-
-	admin, err := c.saramaClient.NewClusterAdminFromClient()
-	if err != nil {
-		return err
-	}
-
 	assignment, err := c.buildAssignment(t)
 	if err != nil {
 		return err
 	}
-
-	return admin.Fn.AlterPartitionReassignments(t.Name, *assignment)
+	return c.saramaClusterAdmin.AlterPartitionReassignments(t.Name, *assignment)
 }
 
 func (c *Client) IsReplicationFactorUpdating(topic string) (bool, error) {
@@ -216,12 +209,7 @@ func (c *Client) IsReplicationFactorUpdating(topic string) (bool, error) {
 		return false, err
 	}
 
-	admin, err := c.saramaClient.NewClusterAdminFromClient()
-	if err != nil {
-		return false, err
-	}
-
-	statusMap, err := admin.Fn.ListPartitionReassignments(topic, partitions)
+	statusMap, err := c.saramaClusterAdmin.ListPartitionReassignments(topic, partitions)
 	if err != nil {
 		return false, err
 	}

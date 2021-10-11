@@ -24,7 +24,7 @@ type void struct{}
 
 var member void
 
-type SaramaClient struct {
+type DefaultSaramaClient struct {
 	client        sarama.Client
 	kafkaConfig   *sarama.Config
 	config        *Config
@@ -32,7 +32,7 @@ type SaramaClient struct {
 	topics        map[string]void
 }
 
-func (k *SaramaClient) extractTopics() error {
+func (k *DefaultSaramaClient) extractTopics() error {
 	topics, err := k.client.Topics()
 	if err != nil {
 		return err
@@ -44,7 +44,7 @@ func (k *SaramaClient) extractTopics() error {
 	return nil
 }
 
-func (k *SaramaClient) populateAPIVersions() error {
+func (k *DefaultSaramaClient) populateAPIVersions() error {
 	ch := make(chan []*sarama.ApiVersionsResponseBlock)
 	errCh := make(chan error)
 
