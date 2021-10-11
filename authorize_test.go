@@ -19,7 +19,7 @@ var (
 			},
 			ResourceName: "Testing-Principal",
 			ResourceType: "Cluster",
-			Operation:    "ClusterAdmin",
+			Operation:    "DefaultSaramaClusterAdmin",
 		},
 	}
 )
@@ -37,7 +37,8 @@ func TestAuthorize_CreatePrincipalSuccess(t *testing.T) {
 		  ]
 `), 200, "200", nil
 	}
-	c := NewClient(&mock, &mk)
+	clusterAdmin, _ := mk.NewSaramaClusterAdmin()
+	c := NewClient(&mock, &mk, clusterAdmin)
 	newPrincipal, err := c.CreatePrincipal("User:testing", testPrincipals)
 	assert.NoError(t, err)
 	assert.Equal(t, "Testing-Principal", newPrincipal.Actions[0].ResourceName)
@@ -64,7 +65,8 @@ func TestAuthorize_CreatePrincipalFail(t *testing.T) {
 		  }
 `), 400, "400 Bad Request", nil
 	}
-	c := NewClient(&mock, &mk)
+	clusterAdmin, _ := mk.NewSaramaClusterAdmin()
+	c := NewClient(&mock, &mk, clusterAdmin)
 	newPrincipal, err := c.CreatePrincipal("User:testing", testPrincipals)
 	assert.NotNil(t, err)
 	assert.Nil(t, newPrincipal)

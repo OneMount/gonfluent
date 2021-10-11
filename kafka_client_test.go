@@ -62,13 +62,11 @@ func (mk *MockKafkaClient) Replicas(topic string, partitionId int32) ([]int32, e
 	return nil, nil
 }
 
-func (mk *MockKafkaClient) NewClusterAdminFromClient() (*KafkaAdmin, error) {
-	return &KafkaAdmin{
-		Fn: &MockKafkaAdmin{
-			TopicNameExpected: mk.TopicNameExpected,
-			PartitionExpected: mk.PartitionExpected,
-			AssignmentExpected: mk.AssignmentExpected,
-		},
+func (mk *MockKafkaClient) NewSaramaClusterAdmin() (SaramaClusterAdmin, error) {
+	return &MockKafkaAdmin{
+		TopicNameExpected: mk.TopicNameExpected,
+		PartitionExpected: mk.PartitionExpected,
+		AssignmentExpected: mk.AssignmentExpected,
 	}, nil
 }
 

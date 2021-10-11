@@ -56,7 +56,8 @@ func TestClusters_ListKafkaCluster(t *testing.T) {
 		}
 `), 200, "200 OK", nil
 	}
-	c := NewClient(&mock, &mk)
+	clusterAdmin, _ := mk.NewSaramaClusterAdmin()
+	c := NewClient(&mock, &mk, clusterAdmin)
 	clusters, err := c.ListKafkaCluster()
 	if assert.NoError(t, err) {
 		assert.Equal(t, 1, len(clusters))
@@ -77,7 +78,8 @@ func TestClusters_GetNonExistingKafkaCluster(t *testing.T) {
 		}
 `), 404, "404 Not Found", nil
 	}
-	c := NewClient(&mock, &mk)
+	clusterAdmin, _ := mk.NewSaramaClusterAdmin()
+	c := NewClient(&mock, &mk, clusterAdmin)
 	cluster, err := c.GetKafkaCluster("cluster-1")
 	assert.Equal(t, errors.New("error with status: 404 Not Found HTTP 404 Not Found"), err)
 	assert.Nil(t, cluster)
@@ -121,7 +123,8 @@ func TestClusters_GetExistingKafkaCluster(t *testing.T) {
 		}
 `), 200, "200 OK", nil
 	}
-	c := NewClient(&mock, &mk)
+	clusterAdmin, _ := mk.NewSaramaClusterAdmin()
+	c := NewClient(&mock, &mk, clusterAdmin)
 	cluster, err := c.GetKafkaCluster("cluster-1")
 	if assert.NoError(t, err) {
 		assert.Equal(t, "cluster-1", cluster.ClusterID)

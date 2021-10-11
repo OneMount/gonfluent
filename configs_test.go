@@ -79,7 +79,8 @@ func TestConfigs_GetTopicConfigs(t *testing.T) {
 	}
 `), 200, "200 OK", nil
 	}
-	c := NewClient(&mock, &mk)
+	clusterAdmin, _ := mk.NewSaramaClusterAdmin()
+	c := NewClient(&mock, &mk, clusterAdmin)
 	configs, err := c.GetTopicConfigs("cluster-1", "topic-1")
 	if assert.NoError(t, err) {
 		assert.Equal(t, 2, len(configs))
@@ -95,7 +96,8 @@ func TestConfigs_GetTopicConfigsFailWithResourceNotFound(t *testing.T) {
 		assert.Equal(t, "/kafka/v3/clusters/cluster-1/topics/topic-1/configs", uri)
 		return nil, 404, "404 Not Found", nil
 	}
-	c := NewClient(&mock, &mk)
+	clusterAdmin, _ := mk.NewSaramaClusterAdmin()
+	c := NewClient(&mock, &mk, clusterAdmin)
 	_, err := c.GetTopicConfigs("cluster-1", "topic-1")
 	if assert.NotNil(t, err) {
 		assert.Contains(t, err.Error(), "404 Not Found")
@@ -110,7 +112,8 @@ func TestConfigs_GetTopicConfigsFailWithWrongData(t *testing.T) {
 		assert.Equal(t, "/kafka/v3/clusters/cluster-1/topics/topic-1/configs", uri)
 		return []byte("<"), 200, "200 OK", nil
 	}
-	c := NewClient(&mock, &mk)
+	clusterAdmin, _ := mk.NewSaramaClusterAdmin()
+	c := NewClient(&mock, &mk, clusterAdmin)
 	_, err := c.GetTopicConfigs("cluster-1", "topic-1")
 	if assert.NotNil(t, err) {
 		assert.Contains(t, err.Error(), "invalid character '<'")
@@ -126,7 +129,8 @@ func TestConfigs_UpdateTopicConfigs(t *testing.T) {
 		return nil, 204, "204 Accepted", nil
 	}
 
-	c := NewClient(&mock, &mk)
+	clusterAdmin, _ := mk.NewSaramaClusterAdmin()
+	c := NewClient(&mock, &mk, clusterAdmin)
 	mockSynonyms := []TopicConfig{
 		{
 			Name: "cleanup.policy",
@@ -151,7 +155,8 @@ func TestConfigs_UpdateTopicConfigsFailWithTopicNotFound(t *testing.T) {
 		return nil, 404, "404 Not Found", nil
 	}
 
-	c := NewClient(&mock, &mk)
+	clusterAdmin, _ := mk.NewSaramaClusterAdmin()
+	c := NewClient(&mock, &mk, clusterAdmin)
 	mockSynonyms := []TopicConfig{
 		{
 			Name: "cleanup.policy",

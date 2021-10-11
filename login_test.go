@@ -22,7 +22,8 @@ func TestLogin_Success(t *testing.T) {
 		}
 `), 204, "204", nil
 	}
-	c := NewClient(&mock, &mk)
+	clusterAdmin, _ := mk.NewSaramaClusterAdmin()
+	c := NewClient(&mock, &mk, clusterAdmin)
 	token, err := c.Login()
 	assert.Nil(t, err)
 	assert.Equal(t, "abcdefghizk", token)
@@ -36,7 +37,8 @@ func TestLogin_Fail(t *testing.T) {
 		assert.Equal(t, "/security/1.0/authenticate", uri)
 		return nil, 403, "403", nil
 	}
-	c := NewClient(&mock, &mk)
+	clusterAdmin, _ := mk.NewSaramaClusterAdmin()
+	c := NewClient(&mock, &mk, clusterAdmin)
 	_, err := c.Login()
 	assert.NotNil(t, err)
 }
@@ -51,7 +53,8 @@ func TestLogin_FailWithWrongResponse(t *testing.T) {
 		<
 `), 200, "200", nil
 	}
-	c := NewClient(&mock, &mk)
+	clusterAdmin, _ := mk.NewSaramaClusterAdmin()
+	c := NewClient(&mock, &mk, clusterAdmin)
 	_, err := c.Login()
 	assert.NotNil(t, err)
 }

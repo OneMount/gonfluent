@@ -1,4 +1,4 @@
-module github.com/wayarmy/gonfluent
+module github.com/OneMount/gonfluent
 
 go 1.16
 

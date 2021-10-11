@@ -24,6 +24,8 @@ type Synonyms struct {
 	Operation string `json:"operation,omitempty"`
 }
 
+// @ref https://docs.confluent.io/platform/current/kafka-rest/api.html#get--clusters-cluster_id-topics-topic_name-configs
+// Return the list of configs that belong to the specified topic.
 func (c *Client) GetTopicConfigs(clusterId string, topicName string) ([]TopicConfig, error) {
 	u := "/kafka/v3/clusters/" + clusterId + "/topics/" + topicName + "/configs"
 
@@ -42,6 +44,8 @@ func (c *Client) GetTopicConfigs(clusterId string, topicName string) ([]TopicCon
 	return res.Data, nil
 }
 
+// @ref Return the list of configs that belong to the specified topic.
+// Updates or deletes a set of topic configs.
 func (c *Client) UpdateTopicConfigs(clusterId string, topicName string, data []TopicConfig) error {
 	u := "/kafka/v3/clusters/" + clusterId + "/topics/" + topicName + "/configs:alter"
 

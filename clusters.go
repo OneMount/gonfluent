@@ -14,6 +14,7 @@ const (
 // - Kafka connect cluster
 // - KSql cluster
 // - Schema Registry cluster
+// @ref https://docs.confluent.io/platform/current/kafka-rest/api.html#cluster
 type Clusters struct {
 	// Kafka cluster ID
 	KafkaCluster string `json:"kafka-cluster,omitempty"`
@@ -36,6 +37,10 @@ type Related struct {
 	Related string `json:"related"`
 }
 
+// Returns a list of known Kafka clusters. Currently both Kafka and Kafka REST Proxy are only aware
+// of the Kafka cluster pointed at by the bootstrap.servers configuration.
+// Therefore only one Kafka cluster will be returned in the response.
+// @ref https://docs.confluent.io/platform/current/kafka-rest/api.html#get--clusters
 func (c *Client) ListKafkaCluster() ([]KafkaCluster, error) {
 	resp, err := c.DoRequest("GET", clusterUri, nil)
 	if err != nil {
@@ -54,6 +59,8 @@ func (c *Client) ListKafkaCluster() ([]KafkaCluster, error) {
 	return body.Data, nil
 }
 
+// Returns the Kafka cluster with the specified cluster_id.
+// @ref https://docs.confluent.io/platform/current/kafka-rest/api.html#get--clusters-cluster_id
 func (c *Client) GetKafkaCluster(clusterId string) (*KafkaCluster, error) {
 	pathUri := clusterUri + "/" + clusterId
 	resp, err := c.DoRequest("GET", pathUri, nil)
